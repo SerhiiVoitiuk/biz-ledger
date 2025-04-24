@@ -11,12 +11,12 @@ import {
 
 Font.register({
   family: "Manrope-Regular",
-  src: "public/fonts/Manrope-Regular.ttf",
+  src: "/fonts/Manrope-Regular.ttf",
 });
 
 Font.register({
   family: "Manrope-Bold",
-  src: "public/fonts/Manrope-Bold.ttf",
+  src: "/fonts/Manrope-Bold.ttf",
 });
 
 const styles = StyleSheet.create({
