@@ -1,0 +1,1 @@
+ALTER TABLE "contracts" ADD COLUMN "execution_period" text NOT NULL;
