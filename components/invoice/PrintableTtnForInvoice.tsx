@@ -1,4 +1,5 @@
 import React from "react";
+import path from 'path';
 import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 import { Font } from "@react-pdf/renderer";
 import {
@@ -10,13 +11,17 @@ import {
 } from "@/lib/utils";
 
 Font.register({
-  family: "Manrope-Regular",
-  src: "/fonts/Manrope-Regular.ttf",
-});
-
-Font.register({
-  family: "Manrope-Bold",
-  src: "/fonts/Manrope-Bold.ttf",
+  family: "Manrope",
+  fonts: [
+    {
+      src: path.resolve(process.cwd(), "public/fonts/Manrope-Regular.ttf"),
+      fontWeight: "normal",
+    },
+    {
+      src: path.resolve(process.cwd(), "public/fonts/Manrope-Bold.ttf"),
+      fontWeight: "bold",
+    },
+  ],
 });
 
 const styles = StyleSheet.create({
@@ -24,7 +29,7 @@ const styles = StyleSheet.create({
     padding: 20,
     fontSize: 10,
     lineHeight: 1.3,
-    fontFamily: "Manrope-Regular",
+    fontFamily: "Manrope",
   },
   docNote: {
     marginLeft: "auto",
@@ -36,7 +41,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 14,
     textTransform: "uppercase",
-    fontFamily: "Manrope-Bold",
+    fontFamily: "Manrope",
   },
   section: {
     flexDirection: "row",
@@ -56,7 +61,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 3,
     fontSize: 8,
-    fontFamily: "Manrope-Bold",
+    fontFamily: "Manrope",
+    fontWeight: "bold",
     borderStyle: "solid",
     borderWidth: 0.2,
     borderColor: "#1f2124",
@@ -354,7 +360,7 @@ const PrintableTtnForInvoice = ({
               <Text
                 style={[
                   styles.tableBlock,
-                  { width: "20%", borderBottom: "none" },
+                  { width: "20%", borderBottom:  0 },
                 ]}
               >
                 Операція
@@ -362,7 +368,7 @@ const PrintableTtnForInvoice = ({
               <Text
                 style={[
                   styles.tableBlock,
-                  { width: "16%", borderBottom: "none" },
+                  { width: "16%", borderBottom:  0 },
                 ]}
               >
                 Маса брутто, т
@@ -373,7 +379,7 @@ const PrintableTtnForInvoice = ({
               <Text
                 style={[
                   styles.tableBlock,
-                  { width: "16%", borderBottom: "none" },
+                  { width: "16%", borderBottom:  0 },
                 ]}
               >
                 Підпис відповідальної особи
@@ -381,11 +387,11 @@ const PrintableTtnForInvoice = ({
             </View>
             <View style={{ flexDirection: "row" }}>
               <Text
-                style={[styles.tableBlock, { width: "20%", borderTop: "none" }]}
+                style={[styles.tableBlock, { width: "20%", borderTop:  0 }]}
               ></Text>{" "}
               {/* rowspan */}
               <Text
-                style={[styles.tableBlock, { width: "16%", borderTop: "none" }]}
+                style={[styles.tableBlock, { width: "16%", borderTop:  0 }]}
               ></Text>{" "}
               {/* rowspan */}
               <Text style={[styles.tableBlock, { width: "16%" }]}>
@@ -394,7 +400,7 @@ const PrintableTtnForInvoice = ({
               <Text style={[styles.tableBlock, { width: "16%" }]}>вибуття</Text>
               <Text style={[styles.tableBlock, { width: "16%" }]}>простою</Text>
               <Text
-                style={[styles.tableBlock, { width: "16%", borderTop: "none" }]}
+                style={[styles.tableBlock, { width: "16%", borderTop:  0 }]}
               ></Text>{" "}
               {/* rowspan */}
             </View>

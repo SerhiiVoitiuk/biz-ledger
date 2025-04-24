@@ -1,23 +1,28 @@
 import React from "react";
+import path from 'path';
 import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 import { Font } from "@react-pdf/renderer";
 import { formatPrice, formatQuantity, formatUkrainianDate } from "@/lib/utils";
 
 Font.register({
-  family: "Manrope-Regular",
-  src: "public/fonts/Manrope-Regular.ttf",
-});
-
-Font.register({
-  family: "Manrope-Bold",
-  src: "public/fonts/Manrope-Bold.ttf",
+  family: "Manrope",
+  fonts: [
+    {
+      src: path.resolve(process.cwd(), "public/fonts/Manrope-Regular.ttf"),
+      fontWeight: "normal",
+    },
+    {
+      src: path.resolve(process.cwd(), "public/fonts/Manrope-Bold.ttf"),
+      fontWeight: "bold",
+    },
+  ],
 });
 
 const styles = StyleSheet.create({
   page: {
     padding: 20,
     backgroundColor: "#fff",
-    fontFamily: 'Manrope-Regular',
+    fontFamily: "Manrope",
   },
   header: {
     display: "flex",
@@ -44,7 +49,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 3,
     fontSize: 8,
-    fontFamily: "Manrope-Bold",
+    fontFamily: "Manrope",
+    fontWeight: "bold",
     borderStyle: "solid",
     borderWidth: 0.2,
     borderColor: "#1f2124",
@@ -66,7 +72,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 20,
     fontSize: 10,
-    fontFamily: "Manrope-Bold",
+    fontFamily: "Manrope",
+    fontWeight: "bold",
   },
 });
 
@@ -75,103 +82,49 @@ const PrintableInvoice = ({ invoiceInfo }: { invoiceInfo: InvoiceById }) => (
     <Page size="A4" style={styles.page}>
       {/* Header */}
       <View style={styles.header}>
-        {/* Supplier Info - LEFT */}
+        {/* Supplier Info */}
         <View style={[styles.supplierSection, { flex: 2, paddingRight: 10 }]}>
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontSize: 8, fontFamily: "Manrope-Bold" }}>
-              Постачальник:{" "}
-            </Text>
-            <Text
-              style={{
-                fontSize: 8,
-                flexShrink: 1,
-                fontFamily: "Manrope-Bold",
-              }}
-            >
-              {invoiceInfo.supplierName}
+          <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center" }}>
+            <Text style={{ fontSize: 8, fontWeight: "bold" }}>
+              Постачальник: {invoiceInfo.supplierName}
             </Text>
           </View>
 
           <View style={{ marginTop: 5 }}>
             <Text style={{ fontSize: 8 }}>
-              <Text style={{ fontFamily: "Manrope-Bold" }}>Адреса: </Text>
-              <Text style={{ fontSize: 8 }}>{invoiceInfo.supplierAddress}</Text>
+              <Text style={{ fontWeight: "bold" }}>Адреса: </Text>
+              {invoiceInfo.supplierAddress}
             </Text>
           </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              alignItems: "center",
-              marginTop: 5,
-            }}
-          >
-            <Text style={{ fontSize: 8, fontFamily: "Manrope-Bold" }}>
-              Р/pахунок:{" "}
-            </Text>
-            <Text style={{ fontSize: 8, flexShrink: 1 }}>
-              {invoiceInfo.supplierBankAccount}
+          <View style={{ flexDirection: "row", marginTop: 5 }}>
+            <Text style={{ fontSize: 8, fontWeight: "bold" }}>
+              Р/pахунок: {invoiceInfo.supplierBankAccount}
             </Text>
           </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              alignItems: "center",
-              marginTop: 5,
-            }}
-          >
-            <Text style={{ fontSize: 8, fontFamily: "Manrope-Bold" }}>
-              ЄДРПОУ:{" "}
-            </Text>
-            <Text style={{ fontSize: 8, flexShrink: 1 }}>
-              {invoiceInfo.supplierEDRPOU}
+          <View style={{ flexDirection: "row", marginTop: 5 }}>
+            <Text style={{ fontSize: 8, fontWeight: "bold" }}>
+              ЄДРПОУ: {invoiceInfo.supplierEDRPOU}
             </Text>
           </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              alignItems: "center",
-              marginTop: 5,
-            }}
-          >
-            <Text style={{ fontSize: 8, fontFamily: "Manrope-Bold" }}>
-              Тел./ф.:{" "}
-            </Text>
-            <Text style={{ fontSize: 8, flexShrink: 1 }}>
-              {invoiceInfo.supplierPhoneNumber}
+          <View style={{ flexDirection: "row", marginTop: 5 }}>
+            <Text style={{ fontSize: 8, fontWeight: "bold" }}>
+              Тел./ф.: {invoiceInfo.supplierPhoneNumber}
             </Text>
           </View>
         </View>
 
-        {/* Invoice Info - RIGHT */}
-        <View
-          style={[styles.supplierSection, { flex: 1, alignItems: "center" }]}
-        >
-          <Text
-            style={{
-              fontSize: 10,
-              fontFamily: "Manrope-Bold",
-              textAlign: "center",
-              textTransform: 'uppercase',
-            }}
-          >
+        {/* Invoice Info */}
+        <View style={[styles.supplierSection, { flex: 1, alignItems: "center" }]}>
+          <Text style={{ fontSize: 10, fontWeight: "bold", textAlign: "center", textTransform: "uppercase" }}>
             Накладна
           </Text>
-          <Text style={{ fontSize: 8, marginTop: 5, textAlign: "center", }}>
+          <Text style={{ fontSize: 8, marginTop: 5 }}>
             № {invoiceInfo.number}
           </Text>
-          <Text style={{ fontSize: 8, marginTop: 5, textAlign: "center" }}>
+          <Text style={{ fontSize: 8, marginTop: 5 }}>
             від {formatUkrainianDate(invoiceInfo.data)} року
           </Text>
         </View>
@@ -180,108 +133,69 @@ const PrintableInvoice = ({ invoiceInfo }: { invoiceInfo: InvoiceById }) => (
       {/* Center */}
       <View style={styles.recipientSection}>
         <View style={{ marginTop: 3 }}>
-          <Text style={{ fontSize: 8, fontFamily: "Manrope-Bold" }}>
-            <Text>Одержувач: </Text>
-            <Text style={{ fontFamily: "Manrope-Regular", fontSize: 8 }}>
-              {invoiceInfo.institutionName} ({invoiceInfo.deliveryAddress})
-            </Text>
+          <Text style={{ fontSize: 8 }}>
+            <Text style={{ fontWeight: "bold" }}>Одержувач: </Text>
+            {invoiceInfo.institutionName} ({invoiceInfo.deliveryAddress})
           </Text>
         </View>
 
         <View style={{ marginTop: 5 }}>
-          <Text style={{ fontSize: 8, fontFamily: "Manrope-Bold" }}>
-            <Text>Платник: </Text>
-            <Text style={{ fontFamily: "Manrope-Regular", fontSize: 8 }}>
-              {invoiceInfo.customerName}
-            </Text>
+          <Text style={{ fontSize: 8 }}>
+            <Text style={{ fontWeight: "bold" }}>Платник: </Text>
+            {invoiceInfo.customerName}
           </Text>
+        </View>
 
-          <View style={{ marginTop: 5 }}>
-            <Text style={{ fontSize: 8, fontFamily: "Manrope-Bold" }}>
-              <Text>Підстава: </Text>
-              <Text style={{ fontFamily: "Manrope-Regular", fontSize: 8 }}>
-                Договір № {invoiceInfo.contractNumber} від {" "}
-                {invoiceInfo.contractData}
-              </Text>
-            </Text>
-          </View>
+        <View style={{ marginTop: 5 }}>
+          <Text style={{ fontSize: 8 }}>
+            <Text style={{ fontWeight: "bold" }}>Підстава: </Text>
+            Договір № {invoiceInfo.contractNumber} від {invoiceInfo.contractData}
+          </Text>
         </View>
       </View>
 
       {/* Table */}
       <View style={styles.table}>
-        {/* Table Header */}
+        {/* Header */}
         <View style={{ flexDirection: "row" }}>
           <Text style={[styles.tableHeader, { width: "10%" }]}>№</Text>
-          <Text style={[styles.tableHeader, { width: "30%" }]}>
-            Найменування товару
-          </Text>
+          <Text style={[styles.tableHeader, { width: "30%" }]}>Найменування товару</Text>
           <Text style={[styles.tableHeader, { width: "15%" }]}>Одиниця виміру</Text>
           <Text style={[styles.tableHeader, { width: "15%" }]}>Кількість</Text>
           <Text style={[styles.tableHeader, { width: "15%" }]}>Ціна</Text>
           <Text style={[styles.tableHeader, { width: "15%" }]}>Сума</Text>
         </View>
 
-        {/* Table Rows */}
+        {/* Rows */}
         {invoiceInfo.specification.map((item, index) => (
           <View style={{ flexDirection: "row" }} key={item.id || index}>
-            <Text style={[styles.tableCell, { width: "10%" }]}>
-              {index + 1}
-            </Text>
-            <Text style={[styles.tableCell, { width: "30%" }]}>
-              {item.productName}
-            </Text>
-            <Text style={[styles.tableCell, { width: "15%" }]}>
-              {item.unit}
-            </Text>
-            <Text style={[styles.tableCell, { width: "15%" }]}>
-              {formatQuantity(item.quantity)}
-            </Text>
-            <Text style={[styles.tableCell, { width: "15%" }]}>
-              {formatPrice(item.pricePerUnit)}
-            </Text>
-            <Text style={[styles.tableCell, { width: "15%" }]}>
-              {formatPrice(item.sum as number)}
-            </Text>
+            <Text style={[styles.tableCell, { width: "10%" }]}>{index + 1}</Text>
+            <Text style={[styles.tableCell, { width: "30%" }]}>{item.productName}</Text>
+            <Text style={[styles.tableCell, { width: "15%" }]}>{item.unit}</Text>
+            <Text style={[styles.tableCell, { width: "15%" }]}>{formatQuantity(item.quantity)}</Text>
+            <Text style={[styles.tableCell, { width: "15%" }]}>{formatPrice(item.pricePerUnit)}</Text>
+            <Text style={[styles.tableCell, { width: "15%" }]}>{formatPrice(item.sum as number)}</Text>
           </View>
         ))}
-        {/* Total Rows*/}
+
+        {/* Totals */}
         <View style={styles.totalRow}>
           <Text style={[styles.tableCell, { width: "55%" }]}></Text>
-          <Text
-            style={[
-              styles.tableCell,
-              { width: "30%", fontFamily: "Manrope-Bold", textAlign: "left" },
-            ]}
-          >
-            Разом
-          </Text>
+          <Text style={[styles.tableCell, { width: "30%", fontWeight: "bold" }]}>Разом</Text>
           <Text style={[styles.tableCell, { width: "15%" }]}>
             {formatPrice(invoiceInfo.totalAmount as number)}
           </Text>
         </View>
+
         <View style={styles.totalRow}>
           <Text style={[styles.tableCell, { width: "55%" }]}></Text>
-          <Text
-            style={[
-              styles.tableCell,
-              { width: "30%", fontFamily: "Manrope-Bold", textAlign: "left" },
-            ]}
-          >
-            ПДВ20%:
-          </Text>
+          <Text style={[styles.tableCell, { width: "30%", fontWeight: "bold" }]}>ПДВ20%:</Text>
           <Text style={[styles.tableCell, { width: "15%" }]}>00,00</Text>
         </View>
+
         <View style={styles.totalRow}>
           <Text style={[styles.tableCell, { width: "55%" }]}></Text>
-          <Text
-            style={[
-              styles.tableCell,
-              { width: "30%", fontFamily: "Manrope-Bold", textAlign: "left" },
-            ]}
-          >
-            Всього з ПДВ:
-          </Text>
+          <Text style={[styles.tableCell, { width: "30%", fontWeight: "bold" }]}>Всього з ПДВ:</Text>
           <Text style={[styles.tableCell, { width: "15%" }]}>
             {formatPrice(invoiceInfo.totalAmount as number)}
           </Text>
