@@ -15,7 +15,7 @@ const LogOut = () => {
       >
         <Button
           variant="ghost"
-          className="p-2 hover:bg-transparent flex flex-row items-center gap-5"
+          className="p-2 hover:bg-transparent flex flex-row items-center gap-5 cursor-pointer"
         >
           <div className="size-5 relative">
             <Image
