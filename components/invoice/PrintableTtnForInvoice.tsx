@@ -232,7 +232,7 @@ const PrintableTtnForInvoice = ({
         <View style={styles.section}>
           <Text>
             Супровідні документи на вантаж накладна №{invoiceInfo.number} від{" "}
-            {formatUkrainianDate(invoiceInfo.data)}
+            {formatUkrainianDate(invoiceInfo.data)} року
           </Text>
         </View>
       </Page>

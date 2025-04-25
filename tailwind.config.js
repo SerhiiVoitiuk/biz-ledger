@@ -21,9 +21,13 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontFamily: {
-        sans: ['var(--font-tinos)', 'sans-serif'],
+        sans: ["var(--font-tinos)", "sans-serif"],
       },
     },
   },
-  content: ["./app/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{ts,tsx,js,jsx}",
+    "./node_modules/@shadcn/ui/**/*.{js,ts,jsx,tsx}",
+  ],
 };
