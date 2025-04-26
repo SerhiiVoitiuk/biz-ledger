@@ -109,7 +109,7 @@ export const invoicesSchema = z.object({
   ),
 }).refine((data) => {
   if (data.status === "Оплачена") {
-    return data.paymentDate && data.paymentDate.length > 0;
+    return !!data.paymentDate && data.paymentDate.length > 0;
   }
   return true;
 }, {

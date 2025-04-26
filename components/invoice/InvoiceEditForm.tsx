@@ -40,9 +40,7 @@ import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { format, parse } from "date-fns";
-import {
-  updateInvoice,
-} from "@/lib/actions/invoice";
+import { updateInvoice } from "@/lib/actions/invoice";
 import {
   TrashIcon,
   PlusCircleIcon,
@@ -97,6 +95,9 @@ const InvoiceEditForm = ({
 
   const { control, handleSubmit, reset } = form;
   const status = useWatch({ control, name: "status" });
+
+  const paymentDate = useWatch({ control, name: "paymentDate" });
+  const isSaveDisabled = isLoading || (status === "Оплачена" && !paymentDate);
 
   useEffect(() => {
     if (!invoice.contractId) return;
@@ -312,9 +313,16 @@ const InvoiceEditForm = ({
               const [paymentDatePopoverOpen, setPaymentDatePopoverOpen] =
                 useState(false);
 
+              const isPaymentDateEmpty = !field.value;
+
               return (
                 <FormItem className="flex flex-col">
-                  <FormLabel className="text-xl font-bold text-[#11191f]">
+                  <FormLabel
+                    className={cn(
+                      "text-xl font-bold",
+                      isPaymentDateEmpty ? "text-red-500" : "text-[#11191f]"
+                    )}
+                  >
                     Дата оплати
                   </FormLabel>
                   <Popover
@@ -363,7 +371,11 @@ const InvoiceEditForm = ({
                       />
                     </PopoverContent>
                   </Popover>
-                  <FormMessage />
+                  {isPaymentDateEmpty && (
+                    <FormMessage>
+                      Дата оплати обов'язкова, якщо рахунок оплачено
+                    </FormMessage>
+                  )}
                 </FormItem>
               );
             }}
@@ -606,7 +618,7 @@ const InvoiceEditForm = ({
         <Button
           type="submit"
           className="min-h-14 w-full font-bold text-xl mt-4 text-[#ffffff]"
-          disabled={isLoading}
+          disabled={isSaveDisabled}
         >
           {isLoading ? (
             <ClipLoader color="#ffffff" size={20} />

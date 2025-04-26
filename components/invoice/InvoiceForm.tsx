@@ -102,6 +102,8 @@ const InvoiceForm = ({
 
   const form = useForm({
     resolver: zodResolver(invoicesSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       number: "",
       data: "",
@@ -115,12 +117,19 @@ const InvoiceForm = ({
     },
   });
 
-  const { control, handleSubmit, reset } = form;
+  const { control, handleSubmit, trigger, reset, formState } = form;
+  const { isValid } = formState;
 
   const customerId = useWatch({ control, name: "customerId" });
   const supplierId = useWatch({ control, name: "supplierId" });
   const contractId = useWatch({ control, name: "contractId" });
   const status = useWatch({ control, name: "status" });
+
+  useEffect(() => {
+    if (status === "Оплачена") {
+      trigger("paymentDate");
+    }
+  }, [status, trigger]);
 
   useEffect(() => {
     if (!customerId) return;
@@ -210,6 +219,7 @@ const InvoiceForm = ({
     values
   ) => {
     setIsLoading(true);
+  
     const result = await createInvoice(values, userId as string);
     setIsLoading(false);
 
@@ -397,6 +407,7 @@ const InvoiceForm = ({
                           if (date) {
                             const formattedDate = format(date, "dd.MM.yyyy");
                             form.setValue("paymentDate", formattedDate);
+                            trigger();
                             setPaymentDatePopoverOpen(false);
                           }
                         }}
@@ -409,7 +420,12 @@ const InvoiceForm = ({
                       />
                     </PopoverContent>
                   </Popover>
-                  <FormMessage />
+
+                  {formState.errors.paymentDate && (
+                    <FormMessage>
+                      {formState.errors.paymentDate.message}
+                    </FormMessage>
+                  )}
                 </FormItem>
               );
             }}
@@ -951,7 +967,7 @@ const InvoiceForm = ({
         <Button
           type="submit"
           className="min-h-14 w-full font-bold text-xl mt-4 text-[#ffffff]"
-          disabled={isLoading}
+          disabled={isLoading || !isValid}
         >
           {isLoading ? (
             <ClipLoader color="#ffffff" size={20} />
