@@ -98,6 +98,7 @@ const InvoiceForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const [loadingSpecification, setLoadingSpecification] = useState(false);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
+  const [contractsLoading, setContractsLoading] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(invoicesSchema),
@@ -144,10 +145,13 @@ const InvoiceForm = ({
 
     const fetchContracts = async () => {
       try {
+        setContractsLoading(true);
         const data = await getContractsForInvoice(customerId, supplierId);
         setContracts(data);
       } catch (error) {
         console.error("Error fetching addresses:", error);
+      } finally {
+        setContractsLoading(false);
       }
     };
 
@@ -674,18 +678,22 @@ const InvoiceForm = ({
           )
         ) : null}
 
-        {customerId && supplierId && contracts.length === 0 ? (
-          <div className="w-full flex flex-col items-center justify-center text-center py-10 bg-[#eae9e0] rounded-lg shadow-sm mt-10">
-            <h2 className="text-xl font-semibold text-[#11191f] mb-4">
-              Договори відсутні
-            </h2>
-            <p className="text-lg text-[#11191f] mb-6">
-              Схоже, що між даним Постачальником та Замовником ще не укладено
-              будь-яких договорів.
-            </p>
-          </div>
-        ) : (
-          contracts.length > 0 && (
+        {customerId && supplierId ? (
+          contractsLoading ? (
+            <div className="w-full flex justify-center items-center py-10">
+              <ClipLoader color="#11191f" size={40} />
+            </div>
+          ) : contracts.length === 0 ? (
+            <div className="w-full flex flex-col items-center justify-center text-center py-10 bg-[#eae9e0] rounded-lg shadow-sm mt-10">
+              <h2 className="text-xl font-semibold text-[#11191f] mb-4">
+                Договори відсутні
+              </h2>
+              <p className="text-lg text-[#11191f] mb-6">
+                Схоже, що між даним Постачальником та Замовником ще не укладено
+                будь-яких договорів.
+              </p>
+            </div>
+          ) : (
             <FormField
               control={form.control}
               name="contractId"
@@ -774,7 +782,7 @@ const InvoiceForm = ({
               }}
             />
           )
-        )}
+        ) : null}
 
         {customerId && supplierId && contractId ? (
           loadingSpecification ? (

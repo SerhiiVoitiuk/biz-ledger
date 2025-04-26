@@ -38,7 +38,6 @@ import {
   DialogHeader,
   DialogFooter,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
@@ -167,7 +166,7 @@ const InvoiceInfo = ({ invoiceInfo }: { invoiceInfo: InvoiceById }) => {
               Номер накладної: {invoiceInfo.number}
             </p>
             <p className="text-sm text-[#11191f]">
-              Дата накладної: {formatUkrainianDate(invoiceInfo.data)}
+              Дата накладної: {formatUkrainianDate(invoiceInfo.data)} року
             </p>
           </div>
 
@@ -233,7 +232,6 @@ const InvoiceInfo = ({ invoiceInfo }: { invoiceInfo: InvoiceById }) => {
             На підставі договору №{" "}
             <span className="font-bold text-[#1f2124]">
               {invoiceInfo.contractNumber} {" від "} {invoiceInfo.contractData}{" "}
-              {" року "}
             </span>
           </h2>
         </div>
