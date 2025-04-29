@@ -479,7 +479,7 @@ const InvoiceForm = ({
                         <CommandGroup>
                           {suppliersList.map((supplier) => (
                             <CommandItem
-                              value={supplier.id}
+                              value={supplier.name}
                               key={supplier.id}
                               onSelect={() => {
                                 form.setValue("supplierId", supplier.id);
@@ -555,7 +555,7 @@ const InvoiceForm = ({
                         <CommandGroup>
                           {customersList.map((customer) => (
                             <CommandItem
-                              value={customer.id}
+                              value={customer.name}
                               key={customer.id}
                               onSelect={() => {
                                 form.setValue("customerId", customer.id);
@@ -656,7 +656,7 @@ const InvoiceForm = ({
                             <CommandGroup>
                               {addresses.map((address) => (
                                 <CommandItem
-                                  value={address.id}
+                                  value={address.institutionName}
                                   key={address.id}
                                   onSelect={() => {
                                     form.setValue(
@@ -764,7 +764,7 @@ const InvoiceForm = ({
                             <CommandGroup>
                               {contracts.map((contract) => (
                                 <CommandItem
-                                  value={contract.id}
+                                  value={`${contract.number} ${contract.data} ${contract.subject}`}
                                   key={contract.id}
                                   onSelect={() => {
                                     form.setValue("contractId", contract.id);

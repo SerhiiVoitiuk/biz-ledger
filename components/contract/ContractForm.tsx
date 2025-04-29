@@ -134,7 +134,7 @@ const ContractForm = ({
                         <CommandGroup>
                           {customersList.map((customer) => (
                             <CommandItem
-                              value={customer.id}
+                              value={customer.name}
                               key={customer.id}
                               onSelect={() => {
                                 form.setValue("customerId", customer.id);
@@ -210,7 +210,7 @@ const ContractForm = ({
                         <CommandGroup>
                           {suppliersList.map((supplier) => (
                             <CommandItem
-                              value={supplier.id}
+                              value={supplier.name}
                               key={supplier.id}
                               onSelect={() => {
                                 form.setValue("supplierId", supplier.id);

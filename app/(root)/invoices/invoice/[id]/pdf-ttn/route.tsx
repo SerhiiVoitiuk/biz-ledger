@@ -1,7 +1,6 @@
-
 import PrintableTtnForInvoice from "@/components/invoice/PrintableTtnForInvoice";
 import { getInvoiceInfo } from "@/lib/data/invoice";
-import { renderToStream } from "@react-pdf/renderer";
+import { renderToBuffer, renderToStream } from "@react-pdf/renderer";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 
@@ -20,10 +19,23 @@ export async function GET(
     return redirect("/404");
   }
 
+  // const stream = await renderToStream(<PrintableTtnForInvoice invoiceInfo={invoiceInfo} vehicleName={vehicleName as string} />);
 
-  const stream = await renderToStream(<PrintableTtnForInvoice invoiceInfo={invoiceInfo} vehicleName={vehicleName as string} />);
+  // return new NextResponse(stream as unknown as ReadableStream, {
+  //   headers: {
+  //     "Content-Type": "application/pdf",
+  //     "Content-Disposition": `inline; filename="ttn-for-invoice-${number}-data-${date}.pdf"`,
+  //   },
+  // });
 
-  return new NextResponse(stream as unknown as ReadableStream, {
+  const buffer = await renderToBuffer(
+    <PrintableTtnForInvoice
+      invoiceInfo={invoiceInfo}
+      vehicleName={vehicleName as string}
+    />
+  );
+
+  return new NextResponse(buffer, {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="ttn-for-invoice-${number}-data-${date}.pdf"`,
