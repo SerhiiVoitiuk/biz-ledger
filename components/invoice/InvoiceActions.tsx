@@ -21,9 +21,10 @@ import { useState } from "react";
 
 interface Props {
   invoiceId: string;
+  dropdownCloseRef: React.MutableRefObject<(() => void) | undefined>;
 }
 
-const InvoiceActions = ({ invoiceId }: Props) => {
+const InvoiceActions = ({ invoiceId, dropdownCloseRef }: Props) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -33,6 +34,7 @@ const InvoiceActions = ({ invoiceId }: Props) => {
       toast.success("Накладну видалено успішно");
       router.refresh();
       setOpen(false);
+      dropdownCloseRef.current?.();
     } catch (error) {
       toast.error("Помилка при видаленні накладної");
     }

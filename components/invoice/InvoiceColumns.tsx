@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatPrice } from "@/lib/utils";
 import InvoiceActions from "./InvoiceActions";
+import { useRef, useState } from "react";
 
 export const columns: ColumnDef<InvoiceTable>[] = [
   {
@@ -36,10 +37,10 @@ export const columns: ColumnDef<InvoiceTable>[] = [
     accessorKey: "totalAmount",
     header: "Сума накладної",
     cell: ({ row }) => {
-      const price = parseFloat(row.getValue("totalAmount"))
+      const price = parseFloat(row.getValue("totalAmount"));
       const formattedPrice = formatPrice(price.toString());
- 
-      return <div className="text-center font-bold">{formattedPrice}</div>
+
+      return <div className="text-center font-bold">{formattedPrice}</div>;
     },
   },
   {
@@ -48,9 +49,19 @@ export const columns: ColumnDef<InvoiceTable>[] = [
     cell: ({ row }) => {
       const payment = row.original;
       const invoiceId = payment.id;
+      const [menuOpen, setMenuOpen] = useState(false);
+      const dropdownCloseRef = useRef<(() => void) | undefined>(undefined);
 
       return (
-        <DropdownMenu>
+        <DropdownMenu
+          open={menuOpen}
+          onOpenChange={(open) => {
+            setMenuOpen(open);
+
+            if (!open) dropdownCloseRef.current = undefined;
+            else dropdownCloseRef.current = () => setMenuOpen(false);
+          }}
+        >
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
               <span className="sr-only">Open menu</span>
@@ -58,7 +69,7 @@ export const columns: ColumnDef<InvoiceTable>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="center">
-            <InvoiceActions invoiceId={invoiceId} />
+            <InvoiceActions invoiceId={invoiceId} dropdownCloseRef={dropdownCloseRef} />
           </DropdownMenuContent>
         </DropdownMenu>
       );

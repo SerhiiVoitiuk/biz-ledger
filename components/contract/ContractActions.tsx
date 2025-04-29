@@ -22,9 +22,10 @@ import { Button } from "../ui/button";
 interface Props {
   contractId: string;
   userId: string;
+  dropdownCloseRef: React.MutableRefObject<(() => void) | undefined>;
 }
 
-const ContractActions = ({ contractId, userId }: Props) => {
+const ContractActions = ({ contractId, userId, dropdownCloseRef }: Props) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -35,6 +36,7 @@ const ContractActions = ({ contractId, userId }: Props) => {
         toast.success("Договір успішно видалено");
         router.refresh();
         setOpen(false);
+        dropdownCloseRef.current?.();
       } else {
         toast.error(result.message);
       }
