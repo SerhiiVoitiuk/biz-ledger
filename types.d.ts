@@ -171,3 +171,10 @@ interface totalSumBySupplier {
   supplierName: string;
   totalPrice: number;
 }
+
+interface quarterlySumBySupplier {
+  supplierId: string;
+  supplierName: string;
+  quarter: number;
+  totalPrice: number;
+}

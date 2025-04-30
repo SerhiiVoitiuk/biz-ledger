@@ -15,10 +15,12 @@ import { years } from "@/constants";
 import { TotalCardSumSkeleton } from "./TotalCardSumSkeleton";
 import { getDashboardInfo } from "@/lib/data/dashboard";
 
+
 type DashboardData = {
   supplierSum: totalSumBySupplier[];
   unpaidSum: totalSumBySupplier[];
   paidSum: totalSumBySupplier[];
+  quarterlySum: quarterlySumBySupplier[];
 };
 
 export function DashboardInfo({
@@ -48,7 +50,7 @@ export function DashboardInfo({
     <>
       <div className="flex flex-row justify-between mt-7">
         <Select value={selectedYear} onValueChange={handleYearChange}>
-          <SelectTrigger className="flex rounded-lg w-45 font-bold bg-[#11191f] text-white placeholder:text-white">
+          <SelectTrigger className="flex rounded-lg w-45 font-bold bg-[#11191f] text-white placeholder:text-white cursor-pointer">
             <SelectValue placeholder="Виберіть рік" />
           </SelectTrigger>
           <SelectContent className="max-h-60 overflow-y-auto font-bold text-[#11191f]">
@@ -78,6 +80,8 @@ export function DashboardInfo({
             <TotalCardSum
               label={paidInvoiceYearSumLabel}
               totalSumBySupplier={data.paidSum}
+              quarterlySum={data.quarterlySum}
+              showTooltip={true}
             />
             <TotalCardSum
               label={unPaidInvoiceYearSumLabel}

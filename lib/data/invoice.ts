@@ -385,3 +385,51 @@ export const getUnpaidSumByContract = async (
     return 0;
   }
 };
+
+export const getQuarterlyPaidInvoiceSumsBySupplier = async (
+  userId: string,
+  year: string
+) => {
+  try {
+    const result = await db
+      .select({
+        supplierId: suppliers.id,
+        supplierName: suppliers.name,
+        quarter: sql<number>`
+          extract(quarter from to_date(${invoices.paymentDate}, 'DD.MM.YYYY'))
+        `.as("quarter"),
+        totalPrice: sql<number>`
+          coalesce(sum(${invoiceSpecification.pricePerUnit} * ${invoiceSpecification.quantity}), 0)
+        `.as("totalPrice"),
+      })
+      .from(suppliers)
+      .leftJoin(
+        invoices,
+        and(
+          eq(invoices.supplierId, suppliers.id),
+          eq(invoices.userId, userId),
+          eq(invoices.status, "Оплачена"),
+          sql`substring(${invoices.paymentDate} from '\\d{2}\\.\\d{2}\\.(\\d{4})') = ${year}`
+        )
+      )
+      .leftJoin(
+        invoiceSpecification,
+        eq(invoices.id, invoiceSpecification.invoiceId)
+      )
+      .where(eq(suppliers.userId, userId))
+      .groupBy(
+        suppliers.id,
+        suppliers.name,
+        sql`extract(quarter from to_date(${invoices.paymentDate}, 'DD.MM.YYYY'))`
+      )
+      .orderBy(suppliers.name, sql`quarter`);
+
+    return result;
+  } catch (error) {
+    console.error(
+      `Error fetching quarterly paid invoice totals by supplier:`,
+      error
+    );
+    return [];
+  }
+};
