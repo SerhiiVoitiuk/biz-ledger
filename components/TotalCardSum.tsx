@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const TotalCardSum = ({
   totalSumBySupplier,
@@ -38,7 +38,7 @@ const TotalCardSum = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="absolute top-2 right-2 cursor-pointer">
-                      <ExclamationCircleIcon className="h-5 w-5" />
+                      <EyeIcon className="h-5 w-5" />
                     </div>
                   </TooltipTrigger>
 
