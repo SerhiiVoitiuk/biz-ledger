@@ -271,18 +271,143 @@ function getUnitWord(amount: number, forms: [string, string, string]): string {
   return forms[2];
 }
 
+type Gender = "masculine" | "feminine" | "neuter";
+
+function getGenderForUnit(unit: string): Gender {
+  switch (unit) {
+    case "кг":
+    case "г":
+    case "л":
+      return "masculine";
+    case "т":
+    case "шт":
+      return "feminine";
+    default:
+      return "masculine"; // дефолт
+  }
+}
+
+function isFeminine(gender: Gender): boolean {
+  return gender === "feminine";
+}
+
+export function priceToWordsForWeight(num: number, feminine: boolean = false): string {
+  const onesMasculine = [
+    "",
+    "один",
+    "два",
+    "три",
+    "чотири",
+    "п’ять",
+    "шість",
+    "сім",
+    "вісім",
+    "дев’ять",
+    "десять",
+    "одинадцять",
+    "дванадцять",
+    "тринадцять",
+    "чотирнадцять",
+    "п’ятнадцять",
+    "шістнадцять",
+    "сімнадцять",
+    "вісімнадцять",
+    "дев’ятнадцять",
+  ];
+
+  const onesFeminine = [
+    "",
+    "одна",
+    "дві",
+    "три",
+    "чотири",
+    "п’ять",
+    "шість",
+    "сім",
+    "вісім",
+    "дев’ять",
+    "десять",
+    "одинадцять",
+    "дванадцять",
+    "тринадцять",
+    "чотирнадцять",
+    "п’ятнадцять",
+    "шістнадцять",
+    "сімнадцять",
+    "вісімнадцять",
+    "дев’ятнадцять",
+  ];
+
+  const tens = [
+    "",
+    "",
+    "двадцять",
+    "тридцять",
+    "сорок",
+    "п’ятдесят",
+    "шістдесят",
+    "сімдесят",
+    "вісімдесят",
+    "дев’яносто",
+  ];
+
+  const hundreds = [
+    "",
+    "сто",
+    "двісті",
+    "триста",
+    "чотириста",
+    "п’ятсот",
+    "шістсот",
+    "сімсот",
+    "вісімсот",
+    "дев’ятсот",
+  ];
+
+  const scales: [string, string, string, boolean][] = [
+    ["", "", "", feminine], // одиниці — рід залежить від переданого параметра
+    ["тисяча", "тисячі", "тисяч", true],
+    ["мільйон", "мільйони", "мільйонів", false],
+    ["мільярд", "мільярди", "мільярдів", false],
+  ];
+
+  if (num === 0) return "нуль";
+
+  const result: string[] = [];
+  let scaleIndex = 0;
+
+  while (num > 0) {
+    const group = num % 1000;
+
+    if (group !== 0) {
+      const scaleGender = scales[scaleIndex][3];
+      const groupWords = getGroupWords(group, scaleGender);
+      const scaleWord = getScaleWord(group, scales[scaleIndex]);
+      result.unshift(`${groupWords} ${scaleWord}`.trim());
+    }
+
+    num = Math.floor(num / 1000);
+    scaleIndex++;
+  }
+
+  return result.join(" ").replace(/\s+/g, " ").trim();
+}
+
 export function convertToWeightString(
   totalQuantity: number,
   unit: string
 ): string {
   let result = "";
 
+  const gender = getGenderForUnit(unit);
+  const feminine = isFeminine(gender);
+
   if (unit === "кг") {
     const kilograms = Math.floor(totalQuantity);
     const grams = Math.round((totalQuantity - kilograms) * 1000);
 
     if (kilograms > 0) {
-      const kgWords = priceToWords(kilograms);
+      const kgWords = priceToWordsForWeight(kilograms, false); // чоловічий
       const kgUnit = getUnitWord(kilograms, [
         "кілограм",
         "кілограми",
@@ -292,27 +417,29 @@ export function convertToWeightString(
     }
 
     if (grams > 0 || kilograms === 0) {
-      const grWords = priceToWords(grams);
+      const grWords = priceToWordsForWeight(grams, false); // чоловічий
       const grUnit = getUnitWord(grams, ["грам", "грами", "грамів"]);
       result += (kilograms > 0 ? " " : "") + `${grWords} ${grUnit}`;
     }
+
   } else if (unit === "г") {
     const grams = Math.round(totalQuantity);
-    const grWords = priceToWords(grams);
+    const grWords = priceToWordsForWeight(grams, false);
     const grUnit = getUnitWord(grams, ["грам", "грами", "грамів"]);
     result = `${grWords} ${grUnit}`;
+
   } else if (unit === "л") {
     const liters = Math.floor(totalQuantity);
     const milliliters = Math.round((totalQuantity - liters) * 1000);
 
     if (liters > 0) {
-      const lWords = priceToWords(liters);
+      const lWords = priceToWordsForWeight(liters, false);
       const lUnit = getUnitWord(liters, ["літр", "літра", "літрів"]);
       result += `${lWords} ${lUnit}`;
     }
 
     if (milliliters > 0 || liters === 0) {
-      const mlWords = priceToWords(milliliters);
+      const mlWords = priceToWordsForWeight(milliliters, false);
       const mlUnit = getUnitWord(milliliters, [
         "мілілітр",
         "мілілітри",
@@ -320,18 +447,19 @@ export function convertToWeightString(
       ]);
       result += (liters > 0 ? " " : "") + `${mlWords} ${mlUnit}`;
     }
+
   } else if (unit === "т") {
     const tons = Math.floor(totalQuantity);
     const kilograms = Math.round((totalQuantity - tons) * 1000);
 
     if (tons > 0) {
-      const tWords = priceToWords(tons);
+      const tWords = priceToWordsForWeight(tons, true);
       const tUnit = getUnitWord(tons, ["тонна", "тонни", "тонн"]);
       result += `${tWords} ${tUnit}`;
     }
 
     if (kilograms > 0 || tons === 0) {
-      const kgWords = priceToWords(kilograms);
+      const kgWords = priceToWordsForWeight(kilograms, false);
       const kgUnit = getUnitWord(kilograms, [
         "кілограм",
         "кілограми",
@@ -339,11 +467,13 @@ export function convertToWeightString(
       ]);
       result += (tons > 0 ? " " : "") + `${kgWords} ${kgUnit}`;
     }
+
   } else if (unit === "шт") {
     const pieces = Math.round(totalQuantity);
-    const pWords = priceToWords(pieces);
+    const pWords = priceToWordsForWeight(pieces, true); // "штука" — жіночий
     const pUnit = getUnitWord(pieces, ["штука", "штуки", "штук"]);
     result = `${pWords} ${pUnit}`;
+
   } else {
     result = "Невідома одиниця";
   }
