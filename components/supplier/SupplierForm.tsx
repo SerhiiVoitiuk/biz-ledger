@@ -50,7 +50,7 @@ const SupplierForm = ({ session }: { session: Session }) => {
         description: "Постачальника додано успішно",
       });
 
-      router.push("/suppliers");
+      router.push(`/suppliers/supplier/${result.data.id}`);
     } else {
       toast("Error", {
         description: result.message,

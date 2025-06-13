@@ -15,7 +15,7 @@ const SuppliersList = ({ suppliersList }: { suppliersList: Suppliers[] }) => {
       <Accordion type="single" collapsible>
         {suppliersList.map((supplier) => (
           <AccordionItem key={supplier.id} value={supplier.id}>
-            <AccordionTrigger>
+            <AccordionTrigger className="pr-0 [&>svg]:hidden">
               <div className="flex flex-row w-full justify-between">
                 <h2 className="text-xl text-[#11191f] font-bold">
                   {supplier.name}

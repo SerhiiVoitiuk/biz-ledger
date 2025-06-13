@@ -68,6 +68,43 @@ interface ContractInfo extends Contract {
   supplier: SupplierById;
 }
 
+interface Driver {
+  id?: string;
+  lastName: string;
+  firstName: string;
+  middleName: string;
+  driverLicense: string;
+}
+
+interface Car {
+  id?: string;
+  name: string;
+  registration: string;
+  owner: string;
+  ownerAddress: string;
+}
+
+interface SupplierCars {
+  cars: Car[];
+}
+
+interface SupplierCarsById extends Car {
+  id: string;
+  userId: string;
+  supplierId: string;
+}
+
+interface SupplierDrivers {
+  drivers: Driver[];
+}
+
+interface SupplierDriversById extends Driver {
+  id: string;
+  userId: string;
+  supplierId: string;
+}
+
+
 interface Address {
   id?: string;
   institutionName: string;

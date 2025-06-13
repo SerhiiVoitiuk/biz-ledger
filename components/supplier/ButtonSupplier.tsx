@@ -1,12 +1,13 @@
 "use client";
 
-import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PencilIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { deleteSupplier } from "@/lib/actions/supplier";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
+import Link from "next/link";
 import {
   Dialog,
   DialogTrigger,
@@ -51,6 +52,22 @@ const ButtonSupplier = ({ supplierId, userId }: Props) => {
 
   return (
     <div className="flex flex-row">
+      <Button
+        className="p-2 text-dark hover:text-dark bg-white hover:bg-white"
+        variant="ghost"
+        asChild
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <Link
+          href={`/suppliers/supplier/${supplierId}`}
+          className="flex items-center gap-2"
+        >
+          <EyeIcon className="h-5 w-10" />
+        </Link>
+      </Button>
+
       <Button
         className="p-2 text-green-500 hover:text-green-700 bg-white hover:bg-white cursor-pointer"
         variant="ghost"

@@ -6,6 +6,9 @@ import { uk } from "date-fns/locale";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+export function getInitial(name: string) {
+  return name.charAt(0).toUpperCase() + ".";
+}
 
 export const getInitials = (name: string): string =>
   name

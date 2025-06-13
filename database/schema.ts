@@ -27,6 +27,34 @@ export const suppliers = pgTable("suppliers", {
   bankAccount: text("bank_account").notNull(),
 });
 
+export const supplierDrivers = pgTable("supplier_drivers", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .references(() => users.id)
+    .notNull(),
+  supplierId: uuid("supplier_id")
+    .references(() => suppliers.id)
+    .notNull(),
+  lastName: text("driver_lastName").notNull(),
+  firstName: text("driver_firstName").notNull(),
+  middleName: text("driver_middleName").notNull(),
+  driverLicense: text("driver_license").notNull(),
+});
+
+export const supplierCars = pgTable("supplier_cars", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .references(() => users.id)
+    .notNull(),
+  supplierId: uuid("supplier_id")
+    .references(() => suppliers.id)
+    .notNull(),
+  name: text("car_name").notNull(),
+  registration: text("car_registration").notNull(),
+  owner: text("car_owner").notNull(),
+  ownerAddress: text("owner_owner").notNull(),
+});
+
 export const customers = pgTable("customers", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id")
@@ -91,7 +119,10 @@ export const contractSpecification = pgTable("contract_specification", {
   }).notNull(),
 });
 
-export const invoiceStatus = pgEnum("invoice_status", ["Неоплачена", "Оплачена"]);
+export const invoiceStatus = pgEnum("invoice_status", [
+  "Неоплачена",
+  "Оплачена",
+]);
 
 export const invoices = pgTable("invoices", {
   id: uuid("id").primaryKey().defaultRandom(),

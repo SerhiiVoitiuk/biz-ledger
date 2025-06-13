@@ -29,6 +29,20 @@
       "when": 1744966289391,
       "tag": "0003_freezing_roland_deschain",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1749481802401,
+      "tag": "0004_fair_crystal",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1749582004482,
+      "tag": "0005_orange_machine_man",
+      "breakpoints": true
     }
   ]
 }

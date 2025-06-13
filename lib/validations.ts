@@ -88,31 +88,92 @@ export const contractSpecificationEditSchema = z.object({
 
 const invoiceStatusEnum = z.enum(["Неоплачена", "Оплачена"]);
 
-export const invoicesSchema = z.object({
-  customerId: z.string().min(1, "Customer ID is required"),
-  supplierId: z.string().min(1, "Supplier ID is required"),
-  customerAddressId: z.string().min(1, "Customer Address  ID is required"),
-  contractId: z.string().min(1, "Contract ID is required"),
-  number: z.string().trim().min(1, "Required").max(100),
-  data: z.string().trim().min(2).max(100),
-  status: invoiceStatusEnum.default("Неоплачена"),
-  paymentDate: z.string().optional(),
-  specification: z.array(
+export const invoicesSchema = z
+  .object({
+    customerId: z.string().min(1, "Customer ID is required"),
+    supplierId: z.string().min(1, "Supplier ID is required"),
+    customerAddressId: z.string().min(1, "Customer Address  ID is required"),
+    contractId: z.string().min(1, "Contract ID is required"),
+    number: z.string().trim().min(1, "Required").max(100),
+    data: z.string().trim().min(2).max(100),
+    status: invoiceStatusEnum.default("Неоплачена"),
+    paymentDate: z.string().optional(),
+    specification: z.array(
+      z.object({
+        contractSpecificationId: z
+          .string()
+          .min(1, "Contract Specification ID is required"),
+        unit: z.enum(unitEnumValues, { message: "Invalid unit" }),
+        quantity: z.string().min(1, "Required"),
+        pricePerUnit: z.string().min(1, "Required"),
+      })
+    ),
+  })
+  .refine(
+    (data) => {
+      if (data.status === "Оплачена") {
+        return !!data.paymentDate && data.paymentDate.length > 0;
+      }
+      return true;
+    },
+    {
+      message: "Дата оплати обов'язкова, якщо рахунок оплачено",
+      path: ["paymentDate"],
+    }
+  );
+
+export const supplierDriversSchema = z.object({
+  drivers: z.array(
     z.object({
-      contractSpecificationId: z
-        .string()
-        .min(1, "Contract Specification ID is required"),
-      unit: z.enum(unitEnumValues, { message: "Invalid unit" }),
-      quantity: z.string().min(1, "Required"),
-      pricePerUnit: z.string().min(1, "Required"),
+      lastName: z.string().min(1, "Required"),
+      firstName: z.string().min(1, "Required"),
+      middleName: z.string().min(1, "Required"),
+      driverLicense: z.string().min(1, "Required"),
     })
   ),
-}).refine((data) => {
-  if (data.status === "Оплачена") {
-    return !!data.paymentDate && data.paymentDate.length > 0;
-  }
-  return true;
-}, {
-  message: "Дата оплати обов'язкова, якщо рахунок оплачено",
-  path: ["paymentDate"],
+});
+
+export const supplierDriversSchemaEditSchema = z.object({
+  drivers: z.array(
+    z.object({
+      id: z.string().min(1, "ID is required"),
+      userId: z.string().min(1, "User ID is required"),
+      supplierId: z.string().min(1, "Customer ID is required"),
+      lastName: z.string().min(1, "Required"),
+      firstName: z.string().min(1, "Required"),
+      middleName: z.string().min(1, "Required"),
+      driverLicense: z.string().min(1, "Required"),
+    })
+  ),
+});
+
+export const supplierCarsSchema = z.object({
+  cars: z.array(
+    z.object({
+      name: z.string().min(1, "Required"),
+      registration: z.string().min(1, "Required"),
+      owner: z.string().min(1, "Required"),
+      ownerAddress: z.string().min(1, "Required"),
+    })
+  ),
+});
+
+
+export const supplierCarsEditSchema = z.object({
+  cars: z.array(
+    z.object({
+      id: z.string().min(1, "ID is required"),
+      userId: z.string().min(1, "User ID is required"),
+      supplierId: z.string().min(1, "Customer ID is required"),
+      name: z.string().min(1, "Required"),
+      registration: z.string().min(1, "Required"),
+      owner: z.string().min(1, "Required"),
+      ownerAddress: z.string().min(1, "Required"),
+    })
+  ),
+});
+
+export const ttnSchema = z.object({
+  carId: z.string().min(1, "Car ID is required"),
+  driverId: z.string().min(1, "Driver ID is required"),
 });

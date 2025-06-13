@@ -1,5 +1,6 @@
 import PrintableTtnForInvoice from "@/components/invoice/PrintableTtnForInvoice";
 import { getInvoiceInfo } from "@/lib/data/invoice";
+import { getSupplierCarById, getSupplierDriverById } from "@/lib/data/supplier";
 import { renderToBuffer, renderToStream } from "@react-pdf/renderer";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
@@ -13,25 +14,21 @@ export async function GET(
   const number = invoiceInfo?.number;
   const date = invoiceInfo?.data;
   const url = new URL(request.url);
-  const vehicleName = url.searchParams.get("vehicle");
 
-  if (!invoiceInfo) {
+  const vehicleId = url.searchParams.get("vehicle");
+  const driverId = url.searchParams.get("driver");
+  const driver = await getSupplierDriverById(driverId as string);
+  const car = await getSupplierCarById(vehicleId as string);
+
+  if (!invoiceInfo || !driver || !car) {
     return redirect("/404");
   }
-
-  // const stream = await renderToStream(<PrintableTtnForInvoice invoiceInfo={invoiceInfo} vehicleName={vehicleName as string} />);
-
-  // return new NextResponse(stream as unknown as ReadableStream, {
-  //   headers: {
-  //     "Content-Type": "application/pdf",
-  //     "Content-Disposition": `inline; filename="ttn-for-invoice-${number}-data-${date}.pdf"`,
-  //   },
-  // });
 
   const buffer = await renderToBuffer(
     <PrintableTtnForInvoice
       invoiceInfo={invoiceInfo}
-      vehicleName={vehicleName as string}
+      driver={driver}
+      car={car}
     />
   );
 

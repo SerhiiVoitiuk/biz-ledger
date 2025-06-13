@@ -1,5 +1,5 @@
 import React from "react";
-import path from 'path';
+import path from "path";
 import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 import { Font } from "@react-pdf/renderer";
 import {
@@ -8,6 +8,7 @@ import {
   formatPrice,
   formatQuantity,
   formatUkrainianDate,
+  getInitial,
 } from "@/lib/utils";
 
 Font.register({
@@ -79,10 +80,12 @@ const styles = StyleSheet.create({
 
 const PrintableTtnForInvoice = ({
   invoiceInfo,
-  vehicleName = "Renault",
+  driver,
+  car,
 }: {
   invoiceInfo: InvoiceById;
-  vehicleName: string;
+  driver: SupplierDriversById;
+  car: SupplierCarsById;
 }) => {
   const totalQuantity = invoiceInfo.specification.reduce((sum, item) => {
     return sum + parseFloat(item.quantity || "0");
@@ -94,34 +97,6 @@ const PrintableTtnForInvoice = ({
 
   const units = invoiceInfo.specification.map((item) => item.unit);
   const firstUnit = units[0];
-
-  let driverWithLicence;
-
-  switch (invoiceInfo.supplierEDRPOU) {
-    case "2932924478":
-      driverWithLicence = "Сімєнков Є.М., ВАЕ 622702";
-      break;
-    case "3884910877":
-      driverWithLicence = "Лопатовський П.Р., ВАЕ 622702";
-      break;
-    default:
-      driverWithLicence = "______________________";
-      break;
-  }
-
-  let driverWithPosition;
-
-  switch (invoiceInfo.supplierEDRPOU) {
-    case "2932924478":
-      driverWithPosition = "Сімєнков Є.М. (водій)";
-      break;
-    case "3884910877":
-      driverWithPosition = "Лопатовський П.Р. (водій)";
-      break;
-    default:
-      driverWithPosition = "______________________";
-      break;
-  }
 
   let loadPlace;
 
@@ -135,26 +110,6 @@ const PrintableTtnForInvoice = ({
     default:
       loadPlace = "_________________________________________________";
       break;
-  }
-
-  let vehicle;
-  let vehicleOwner;
-
-  if (
-    invoiceInfo.supplierEDRPOU === "2932924478" ||
-    invoiceInfo.supplierEDRPOU === "3884910877"
-  ) {
-    vehicle =
-      vehicleName === "Renault"
-        ? "RENAULT MASTER ВХ 7258 HК"
-        : "Peugeot Partner ВХ 3754 СІ";
-    vehicleOwner =
-      vehicleName === "Renault"
-        ? "Сімєнкова Ірина Вікторівна, м.Хмельницький, вул. Зарічанська, буд.14-А"
-        : "Сімєнков  Євгеній  Миколайович, с. Давидківці, вул. Лісова, будинок 52";
-  } else {
-    vehicle = "______________________";
-    vehicleOwner = "______________________";
   }
 
   return (
@@ -182,13 +137,20 @@ const PrintableTtnForInvoice = ({
           <Text style={{ textAlign: "right" }}>Форма № 1-ТН</Text>
         </View>
         <View style={styles.section}>
-          <Text>Автомобіль {vehicle}</Text>
+          <Text>
+            Автомобіль {car.name} {car.registration}
+          </Text>
           <Text>Причіп/напівпричіп ______________</Text>
           <Text>Вид перевезень _______________</Text>
         </View>
         <View style={styles.section}>
-          <Text>Автомобільний перевізник {vehicleOwner} </Text>
-          <Text>{driverWithLicence}</Text>
+          <Text>
+            Автомобільний перевізник {car.owner} {car.ownerAddress}{" "}
+          </Text>
+          <Text>
+            {driver.lastName} {getInitial(driver.firstName)}
+            {getInitial(driver.middleName)}, {driver.driverLicense}
+          </Text>
         </View>
         <View style={styles.section}>
           <Text>
@@ -221,7 +183,11 @@ const PrintableTtnForInvoice = ({
           <Text>
             кількість місць {convertToWeightString(totalQuantity, firstUnit)}
           </Text>
-          <Text>отримав водій/експедитор {driverWithPosition}</Text>
+          <Text>
+            отримав водій/експедитор {driver.lastName}{" "}
+            {getInitial(driver.firstName)}
+            {getInitial(driver.middleName)} (Водій)
+          </Text>
         </View>
         <View style={styles.section}>
           <Text>
@@ -358,18 +324,12 @@ const PrintableTtnForInvoice = ({
           <View style={styles.table}>
             <View style={{ flexDirection: "row" }}>
               <Text
-                style={[
-                  styles.tableBlock,
-                  { width: "20%", borderBottom:  0 },
-                ]}
+                style={[styles.tableBlock, { width: "20%", borderBottom: 0 }]}
               >
                 Операція
               </Text>
               <Text
-                style={[
-                  styles.tableBlock,
-                  { width: "16%", borderBottom:  0 },
-                ]}
+                style={[styles.tableBlock, { width: "16%", borderBottom: 0 }]}
               >
                 Маса брутто, т
               </Text>
@@ -377,21 +337,18 @@ const PrintableTtnForInvoice = ({
                 Час (год. хв)
               </Text>
               <Text
-                style={[
-                  styles.tableBlock,
-                  { width: "16%", borderBottom:  0 },
-                ]}
+                style={[styles.tableBlock, { width: "16%", borderBottom: 0 }]}
               >
                 Підпис відповідальної особи
               </Text>
             </View>
             <View style={{ flexDirection: "row" }}>
               <Text
-                style={[styles.tableBlock, { width: "20%", borderTop:  0 }]}
+                style={[styles.tableBlock, { width: "20%", borderTop: 0 }]}
               ></Text>{" "}
               {/* rowspan */}
               <Text
-                style={[styles.tableBlock, { width: "16%", borderTop:  0 }]}
+                style={[styles.tableBlock, { width: "16%", borderTop: 0 }]}
               ></Text>{" "}
               {/* rowspan */}
               <Text style={[styles.tableBlock, { width: "16%" }]}>
@@ -400,7 +357,7 @@ const PrintableTtnForInvoice = ({
               <Text style={[styles.tableBlock, { width: "16%" }]}>вибуття</Text>
               <Text style={[styles.tableBlock, { width: "16%" }]}>простою</Text>
               <Text
-                style={[styles.tableBlock, { width: "16%", borderTop:  0 }]}
+                style={[styles.tableBlock, { width: "16%", borderTop: 0 }]}
               ></Text>{" "}
               {/* rowspan */}
             </View>
